@@ -18,12 +18,9 @@ sub mix ($self) {
   my $category = $self->param('category');
   my $others = $self->param('ingredients');
   my %others = split /:/, $others;
-  my $sql = 'SELECT name FROM ingredient WHERE category_id = ?';
-  my $ingredients = $self->dbh->selectall_arrayref($sql, undef, $category);
+  my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
+  my $ingredients = $self->dbh->selectall_arrayref($sql, undef, $category, $others{$category});
   my $ingredient = $ingredients->[ int rand @$ingredients ][0];
-  if ($others{$category} eq $ingredient) {
-    $ingredient = $ingredients->[ int rand @$ingredients ][0];
-  }
   $others{$category} = $ingredient;
   my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
   $self->redirect_to(
