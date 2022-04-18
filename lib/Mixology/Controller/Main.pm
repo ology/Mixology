@@ -95,8 +95,6 @@ sub update ($self) {
   my $ingredients = $self->dbh->selectall_arrayref($sql, { Slice => {} }, $category);
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
-    name     => $name,
-    children => $ingredients,
   ));
 }
 
