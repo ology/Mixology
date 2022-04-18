@@ -95,6 +95,13 @@ sub update ($self) {
     $sql = 'UPDATE category SET name = ? WHERE id = ?';
     my $rv = $self->dbh->do($sql, undef, $title, $category);
   }
+  my @ingredients = grep { $_ =~ /^ingredient_/ } @{ $self->req->params->names };
+  for my $ingredient (@ingredients) {
+    my $name = $self->param($ingredient);
+    (my $id = $ingredient) =~ s/^ingredient_(\d+)$/$1/;
+    $sql = 'UPDATE ingredient SET name = ? WHERE id = ?';
+    my $rv = $self->dbh->do($sql, undef, $name, $id);
+  }
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
   ));
