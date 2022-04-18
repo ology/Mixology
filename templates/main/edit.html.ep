@@ -11,7 +11,7 @@
     <div class="form-group row">
       <label for="title" class="col-sm-2 col-form-label"><b>Title:</b></label>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="title" placeholder="Title" value="<%= $name %>">
+        <input type="text" class="form-control" name="title" placeholder="Title" value="<%= $name %>">
       </div>
       <div class="col-sm-2">
         <a href="<%= url_for('delete_category')->query(category => $category) %>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
@@ -26,7 +26,7 @@
         <label for="ingredient_<%= $child->{id} %>" class="col-sm-2 col-form-label"><%= $child->{id} %>:</label>
       </div>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="ingredient_<%= $child->{id} %>" placeholder="Ingredient" value="<%= $child->{name} %>">
+        <input type="text" class="form-control" name="ingredient_<%= $child->{id} %>" placeholder="Ingredient" value="<%= $child->{name} %>">
       </div>
       <div class="col-sm-2">
         <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $child->{id}) %>" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
