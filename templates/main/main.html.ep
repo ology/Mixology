@@ -1,0 +1,32 @@
+% layout 'default';
+% title 'Mixology';
+<p></p>
+<div class="row text-center">
+  <h2><a href="<%= url_for('main') %>"><%= title %></a></h2>
+</div>
+<p></p>
+% my %ingredients = split /:/, $ingredients;
+% for my $cat (@$categories) {
+%   my $name = ucfirst $cat->[1];
+<div class="row">
+  <a href="<%= url_for('add')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-primary"><b>+</b></a>
+  &nbsp;
+  <div style="width: 80px;">
+  <a href="<%= url_for('mix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-success btn-block"><%= $name %></a>
+  </div>
+%   if (exists $ingredients{ $cat->[0] }) {
+  &nbsp;
+  <b><a href="<%= url_for('unmix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-danger"><b>x</b></a></b>
+  &nbsp;
+  <%= ucfirst $ingredients{ $cat->[0] } %>
+%   }
+</div>
+<p></p>
+% }
+<div class="row">
+  <a href="<%= url_for('shuffle')->query(ingredients => $ingredients) %>" class="btn btn-warning btn-block">Shuffle</a>
+</div>
+<p></p>
+<div class="row">
+  <a href="<%= url_for('main') %>" class="btn btn-secondary btn-block">Clear</a>
+</div>
