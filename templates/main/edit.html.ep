@@ -45,7 +45,8 @@
         <a href="<%= url_for('main')->query(category => $category, ingredients => $ingredients) %>" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       </div>
       <div class="col-sm-8">
-        <input type="button" class="form-control btn btn-primary" value="Submit">
+        <input type="hidden" name="category" value="<%= $category %>">
+        <input type="submit" class="form-control btn btn-primary" value="Submit">
       </div>
     </div>
   </form>
