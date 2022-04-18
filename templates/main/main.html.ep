@@ -10,7 +10,7 @@
 <div class="row" style=" margin-left: 15px; margin-right: 15px;">
   <a href="<%= url_for('edit')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-info"><i class="fa fa-pencil" aria-hidden="true"></i></a>
   &nbsp;
-  <div style="width: 80px;">
+  <div style="width: 85px;">
   <a href="<%= url_for('mix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-success btn-block"><%= ucfirst $cat->[1] %></a>
   </div>
 %   if (exists $ingredients{ $cat->[0] }) {
@@ -23,9 +23,9 @@
 <p></p>
 % }
 <div class="row" style=" margin-left: 15px; margin-right: 15px;">
-  <a href="<%= url_for('main') %>" class="btn btn-secondary">Clear</a>
+  <a href="<%= url_for('new')->query(ingredients => $ingredients) %>" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></a>
   &nbsp;
-  <a href="<%= url_for('shuffle')->query(ingredients => $ingredients) %>" class="btn btn-warning">Shuffle</a>
+  <a href="<%= url_for('shuffle')->query(ingredients => $ingredients) %>" class="btn btn-warning"><i class="fa fa-repeat" aria-hidden="true"></i></a>
   &nbsp;
-  <a href="<%= url_for('new')->query(ingredients => $ingredients) %>" class="btn btn-primary">New Category</a>
+  <a href="<%= url_for('main') %>" class="btn btn-secondary"><i class="fa fa-eraser" aria-hidden="true"></i></a>
 </div>
