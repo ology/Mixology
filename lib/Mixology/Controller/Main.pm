@@ -89,10 +89,6 @@ sub update ($self) {
     my $sql = 'INSERT INTO ingredient (name,category_id) VALUES (?,?)';
     my $rv = $self->dbh->do($sql, undef, $new_ingredient, $category);
   }
-  my $sql = 'SELECT name FROM category WHERE id = ?';
-  my $name = $self->dbh->selectall_arrayref($sql, undef, $category)->[0][0];
-  $sql = 'SELECT id,name FROM ingredient WHERE category_id = ? ORDER BY name';
-  my $ingredients = $self->dbh->selectall_arrayref($sql, { Slice => {} }, $category);
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
   ));
