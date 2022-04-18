@@ -19,7 +19,12 @@ sub mix ($self) {
   my $others = $self->param('ingredients');
   my %others = split /:/, $others;
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ?';
-  my $ingredients = $self->dbh->selectall_arrayref($sql, undef, $category);
+  my @bind = ($category);
+  if ($category && $others{$category}) {
+    $sql .= ' AND name != ?';
+    push @bind, $others{$category};
+  }
+  my $ingredients = $self->dbh->selectall_arrayref($sql, undef, @bind);
   my $ingredient = $ingredients->[ int rand @$ingredients ][0];
   $others{$category} = $ingredient;
   my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
