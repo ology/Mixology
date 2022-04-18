@@ -20,16 +20,16 @@
     <div class="form-group row">
       <label for="ingredients" class="col-sm-12 col-form-label"><b>Ingredients:</b></label>
     </div>
-% for my $ingredient (@$children) {
+% for my $child (@$children) {
     <div class="form-group row">
       <div class="col-sm-2">
-        <label for="ingredient_<%= $ingredient->{id} %>" class="col-sm-2 col-form-label"><%= $ingredient->{id} %>:</label>
+        <label for="ingredient_<%= $child->{id} %>" class="col-sm-2 col-form-label"><%= $child->{id} %>:</label>
       </div>
       <div class="col-sm-8">
-        <input type="text" class="form-control" id="ingredient_<%= $ingredient->{id} %>" placeholder="Ingredient" value="<%= $ingredient->{name} %>">
+        <input type="text" class="form-control" id="ingredient_<%= $child->{id} %>" placeholder="Ingredient" value="<%= $child->{name} %>">
       </div>
       <div class="col-sm-2">
-        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $ingredient->{id}) %>" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $child->{id}) %>" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
       </div>
     </div>
 % }
