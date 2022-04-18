@@ -1,14 +1,14 @@
 % layout 'default';
 % title 'Mixology';
 <p></p>
-<div class="row">
+<div class="row" style=" margin-left: 15px; margin-right: 15px;">
   <h2><a href="<%= url_for('main') %>"><%= title %></a></h2>
 </div>
 <p></p>
 % my %ingredients = split /:/, $ingredients;
 % for my $cat (@$categories) {
-<div class="row">
-  <a href="<%= url_for('edit')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+<div class="row" style=" margin-left: 15px; margin-right: 15px;">
+  <a href="<%= url_for('edit')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-info"><i class="fa fa-pencil" aria-hidden="true"></i></a>
   &nbsp;
   <div style="width: 80px;">
   <a href="<%= url_for('mix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-success btn-block"><%= ucfirst $cat->[1] %></a>
@@ -22,8 +22,10 @@
 </div>
 <p></p>
 % }
-<div class="row">
+<div class="row" style=" margin-left: 15px; margin-right: 15px;">
   <a href="<%= url_for('main') %>" class="btn btn-secondary">Clear</a>
   &nbsp;
   <a href="<%= url_for('shuffle')->query(ingredients => $ingredients) %>" class="btn btn-warning">Shuffle</a>
+  &nbsp;
+  <a href="<%= url_for('new')->query(ingredients => $ingredients) %>" class="btn btn-primary">New Category</a>
 </div>
