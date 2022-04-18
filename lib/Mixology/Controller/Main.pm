@@ -86,7 +86,7 @@ sub update ($self) {
   my $title = $self->param('title');
   my $new_ingredient = $self->param('new_ingredient');
   if ($new_ingredient) {
-    my $sql = 'INSERT INTO ingredient (name,category_id) VALUES (?,?)';
+    my $sql = 'INSERT INTO ingredient (name, category_id) VALUES (?, ?)';
     my $rv = $self->dbh->do($sql, undef, $new_ingredient, $category);
   }
   my $sql = 'SELECT name FROM category WHERE id = ?';
