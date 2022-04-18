@@ -1,0 +1,52 @@
+% layout 'default';
+% title 'Mixology';
+<p></p>
+<div class="row" style=" margin-left: 15px; margin-right: 15px;">
+  <h2><a href="<%= url_for('main') %>"><%= title %></a></h2>
+</div>
+<p></p>
+<p></p>
+<div class="row" style=" margin-left: 15px; margin-right: 15px;">
+  <form method="post">
+    <div class="form-group row">
+      <label for="title" class="col-sm-2 col-form-label"><b>Title:</b></label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="title" placeholder="Title" value="<%= $name %>">
+      </div>
+      <div class="col-sm-2">
+        <a href="<%= url_for('delete_category')->query(category => $category) %>" class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="ingredients" class="col-sm-12 col-form-label"><b>Ingredients:</b></label>
+    </div>
+% for my $ingredient (@$children) {
+    <div class="form-group row">
+      <div class="col-sm-2">
+        <label for="ingredient_<%= $ingredient->{id} %>" class="col-sm-2 col-form-label"><%= $ingredient->{id} %>:</label>
+      </div>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="ingredient_<%= $ingredient->{id} %>" placeholder="Ingredient" value="<%= $ingredient->{name} %>">
+      </div>
+      <div class="col-sm-2">
+        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $ingredient->{id}) %>" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></a>
+      </div>
+    </div>
+% }
+    <div class="form-group row">
+      <div class="col-sm-2">
+      </div>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="new_ingredient" name="new_ingredient" placeholder="New ingredient">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-2">
+        <a href="<%= url_for('main')->query(category => $category, ingredients => $ingredients) %>" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+      </div>
+      <div class="col-sm-8">
+        <input type="button" class="form-control btn btn-primary" value="Submit">
+      </div>
+    </div>
+  </form>
+</div>

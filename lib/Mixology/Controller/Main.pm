@@ -66,4 +66,19 @@ sub shuffle ($self) {
   );
 }
 
+sub edit ($self) {
+  my $category = $self->param('category');
+  my $others = $self->param('ingredients');
+  my $sql = 'SELECT name FROM category WHERE id = ?';
+  my $name = $self->dbh->selectall_arrayref($sql, undef, $category)->[0][0];
+  $sql = 'SELECT id,name FROM ingredient WHERE category_id = ? ORDER BY name';
+  my $ingredients = $self->dbh->selectall_arrayref($sql, { Slice => {} }, $category);
+  $self->render(
+    category    => $category,
+    name        => $name,
+    ingredients => $others,
+    children    => $ingredients,
+  );
+}
+
 1;
