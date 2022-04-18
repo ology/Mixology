@@ -16,6 +16,7 @@ sub startup ($self) {
   $r->get('/unmix')->to('Main#unmix')->name('unmix');
   $r->get('/shuffle')->to('Main#shuffle')->name('shuffle');
   $r->get('/edit')->to('Main#edit')->name('edit');
+  $r->post('/edit')->to('Main#update')->name('update');
 }
 
 1;
