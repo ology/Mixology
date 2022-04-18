@@ -48,4 +48,22 @@ sub unmix ($self) {
   );
 }
 
+sub shuffle ($self) {
+  my $others = $self->param('ingredients');
+  my %others = split /:/, $others;
+  my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
+  for my $category (keys %others) {
+    my @bind = ($category, $others{$category});
+    my $ingredients = $self->dbh->selectall_arrayref($sql, undef, @bind);
+    my $ingredient = $ingredients->[ int rand @$ingredients ][0];
+    $others{$category} = $ingredient;
+  }
+  my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
+  $self->redirect_to(
+    $self->url_for('main')->query(
+      ingredients => $fresh,
+    )
+  );
+}
+
 1;
