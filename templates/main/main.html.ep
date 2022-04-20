@@ -23,7 +23,7 @@
 <p></p>
 % }
 <div class="row" style=" margin-left: 15px; margin-right: 15px;">
-  <a href="<%= url_for('new')->query(ingredients => $ingredients) %>" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></a>
+  <a href="<%= url_for('new_category')->query(ingredients => $ingredients) %>" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i></a>
   &nbsp;
   <a href="<%= url_for('shuffle')->query(ingredients => $ingredients) %>" class="btn btn-warning"><i class="fa fa-repeat" aria-hidden="true"></i></a>
   &nbsp;
