@@ -123,7 +123,7 @@ sub delete_category ($self) {
   my $rv = $self->dbh->do($sql, undef, $category);
   $sql = 'DELETE FROM category WHERE id = ?';
   $rv = $self->dbh->do($sql, undef, $category);
-  $self->redirect_to($self->url_for('main');
+  $self->redirect_to($self->url_for('main'));
 }
 
 1;
