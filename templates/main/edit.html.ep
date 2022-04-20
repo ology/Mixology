@@ -23,13 +23,10 @@
 % for my $child (@$children) {
     <div class="form-group row">
       <div class="col-sm-2">
-        <label for="ingredient_<%= $child->{id} %>" class="col-sm-2 col-form-label"><%= $child->{id} %>:</label>
+        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $child->{id}) %>" class="btn btn-danger" onclick="if(!confirm('Delete ingredient <%= $child->{name} %>?')) return false;"><i class="fa fa-times" aria-hidden="true"></i></a>
       </div>
       <div class="col-sm-8">
         <input type="text" class="form-control" name="ingredient_<%= $child->{id} %>" placeholder="Ingredient" value="<%= $child->{name} %>">
-      </div>
-      <div class="col-sm-2">
-        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $child->{id}) %>" class="btn btn-danger" onclick="if(!confirm('Delete ingredient <%= $child->{name} %>?')) return false;"><i class="fa fa-times" aria-hidden="true"></i></a>
       </div>
     </div>
 % }
