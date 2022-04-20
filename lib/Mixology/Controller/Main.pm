@@ -126,4 +126,13 @@ sub delete_category ($self) {
   $self->redirect_to($self->url_for('main'));
 }
 
+sub new_category ($self) {
+  my $name = $self->param('name');
+  if ($name) {
+    my $sql = 'INSERT INTO category (name) VALUES (?)';
+    my $rv = $self->dbh->do($sql, undef, $name);
+  }
+  $self->redirect_to($self->url_for('main'));
+}
+
 1;

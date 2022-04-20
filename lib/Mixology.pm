@@ -19,6 +19,7 @@ sub startup ($self) {
   $r->post('/edit')->to('Main#update')->name('update');
   $r->get('/delete_ingredient')->to('Main#delete_ingredient')->name('delete_ingredient');
   $r->get('/delete_category')->to('Main#delete_category')->name('delete_category');
+  $r->post('/new_category')->to('Main#new_category')->name('new_category');
 }
 
 1;
