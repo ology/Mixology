@@ -2,7 +2,6 @@ package Mixology::Controller::Main;
 
 use Mojo::Base 'Mojolicious::Controller', -signatures;
 
-use DBI;
 use Mojo::SQLite;
 
 sub main ($self) {
