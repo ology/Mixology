@@ -1,5 +1,4 @@
 package Mixology::Controller::Main;
-
 use Mojo::Base 'Mojolicious::Controller', -signatures;
 
 use Mojo::SQLite;
