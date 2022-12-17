@@ -13,7 +13,7 @@
         <input type="text" class="form-control" name="title" placeholder="Category" value="<%= $name %>">
       </div>
       <div class="col-sm-2">
-        <a href="<%= url_for('delete_category')->query(category => $category) %>" class="btn btn-danger" onclick="if(!confirm('Delete category <%= $name %> and all child indredients?')) return false;"><i class="fa fa-trash" aria-hidden="true"></i></a>
+        <a href="<%= url_for('delete_category')->query(category => $category) %>" class="btn btn-sm btn-danger" onclick="if(!confirm('Delete category <%= $name %> and all child indredients?')) return false;"><i class="fa fa-trash" aria-hidden="true"></i></a>
       </div>
     </div>
     <div class="form-group row">
@@ -22,7 +22,7 @@
 % for my $child (@$children) {
     <div class="form-group row">
       <div class="col-sm-2">
-        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $child->{id}) %>" class="btn btn-danger" onclick="if(!confirm('Delete ingredient <%= $child->{name} %>?')) return false;"><i class="fa fa-times" aria-hidden="true"></i></a>
+        <a href="<%= url_for('delete_ingredient')->query(category => $category, ingredient => $child->{id}) %>" class="btn btn-sm btn-danger" onclick="if(!confirm('Delete ingredient <%= $child->{name} %>?')) return false;"><i class="fa fa-times" aria-hidden="true"></i></a>
       </div>
       <div class="col-sm-6">
         <input type="text" class="form-control" name="ingredient_<%= $child->{id} %>" placeholder="Ingredient" value="<%= $child->{name} %>">
@@ -38,11 +38,11 @@
     </div>
     <div class="form-group row">
       <div class="col-sm-2">
-        <a href="<%= url_for('main')->query(category => $category, ingredients => $ingredients) %>" class="btn btn-info"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        <a href="<%= url_for('main')->query(category => $category, ingredients => $ingredients) %>" class="btn btn-sm btn-info"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       </div>
       <div class="col-sm-6">
         <input type="hidden" name="category" value="<%= $category %>">
-        <input type="submit" class="form-control btn btn-primary" value="Submit">
+        <input type="submit" class="form-control btn btn-sm btn-primary" value="Submit">
       </div>
     </div>
   </form>
