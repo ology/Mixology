@@ -1,5 +1,4 @@
 package Mixology;
-
 use Mojo::Base 'Mojolicious', -signatures;
 
 sub startup ($self) {
