@@ -138,7 +138,8 @@ sub new_category ($self) {
   my $name = $self->param('name');
   if ($name) {
     my $sql = 'INSERT INTO category (name) VALUES (?)';
-    my $rv = $self->dbh->do($sql, undef, $name);
+    my $db = $self->sqlite->db;
+    $db->query($sql, $name);
   }
   $self->redirect_to($self->url_for('main'));
 }
