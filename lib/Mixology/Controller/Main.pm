@@ -117,7 +117,8 @@ sub delete_ingredient ($self) {
   my $category = $self->param('category');
   my $ingredient = $self->param('ingredient');
   my $sql = 'DELETE FROM ingredient WHERE id = ?';
-  my $rv = $self->dbh->do($sql, undef, $ingredient);
+  my $db = $self->sqlite->db;
+  $db->query($sql, $ingredient);
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
   ));
