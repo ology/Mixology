@@ -91,20 +91,20 @@ sub update ($self) {
   my $db = $self->sqlite->db;
   if ($new_ingredient) {
     my $sql = 'INSERT INTO ingredient (name, category_id) VALUES (?, ?)';
-    $db->query($sql, $new_ingredient, $category);
+    $db->query($sql, lc($new_ingredient), $category);
   }
   my $sql = 'SELECT name FROM category WHERE id = ?';
   my $name = $db->query($sql, $category)->hash->{name};
   if ($title && $title ne $name) {
     $sql = 'UPDATE category SET name = ? WHERE id = ?';
-    $db->query($sql, $title, $category);
+    $db->query($sql, lc($title), $category);
   }
   my @ingredients = grep { $_ =~ /^ingredient_/ } @{ $self->req->params->names };
   for my $ingredient (@ingredients) {
     my $name = $self->param($ingredient);
     (my $id = $ingredient) =~ s/^ingredient_(\d+)$/$1/;
     $sql = 'UPDATE ingredient SET name = ? WHERE id = ?';
-    $db->query($sql, $name, $id);
+    $db->query($sql, lc($name), $id);
   }
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
@@ -137,7 +137,7 @@ sub new_category ($self) {
   if ($name) {
     my $sql = 'INSERT INTO category (name) VALUES (?)';
     my $db = $self->sqlite->db;
-    $db->query($sql, $name);
+    $db->query($sql, lc($name));
   }
   $self->redirect_to($self->url_for('main'));
 }
