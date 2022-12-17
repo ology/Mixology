@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious', -signatures;
 sub startup ($self) {
   my $config = $self->plugin('NotYAMLConfig');
 
-  $self->plugin('Mixology::DB::Plugin');
+  $self->plugin('DB');
 
   $self->secrets($config->{secrets});
 

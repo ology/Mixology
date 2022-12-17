@@ -3,11 +3,13 @@ package Mixology::Controller::Main;
 use Mojo::Base 'Mojolicious::Controller', -signatures;
 
 use DBI;
+use Mojo::SQLite;
 
 sub main ($self) {
   my $ingredients = $self->param('ingredients') || '';
   my $sql = 'SELECT id,name FROM category ORDER BY name';
-  my $categories = $self->dbh->selectall_arrayref($sql);
+  my $db = $self->sqlite->db;
+  my $categories = $db->query($sql)->arrays;
   $self->render(
     categories  => $categories,
     ingredients => $ingredients,
@@ -24,7 +26,8 @@ sub mix ($self) {
     $sql .= ' AND name != ?';
     push @bind, $others{$category};
   }
-  my $ingredients = $self->dbh->selectall_arrayref($sql, undef, @bind);
+  my $db = $self->sqlite->db;
+  my $ingredients = $db->query($sql, @bind)->arrays;
   my $ingredient = $ingredients->[ int rand @$ingredients ][0];
   $others{$category} = $ingredient;
   my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
@@ -52,9 +55,10 @@ sub shuffle ($self) {
   my $others = $self->param('ingredients');
   my %others = split /:/, $others;
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
+  my $db = $self->sqlite->db;
   for my $category (keys %others) {
     my @bind = ($category, $others{$category});
-    my $ingredients = $self->dbh->selectall_arrayref($sql, undef, @bind);
+    my $ingredients = $db->query($sql, @bind)->arrays;
     my $ingredient = $ingredients->[ int rand @$ingredients ][0];
     $others{$category} = $ingredient;
   }
