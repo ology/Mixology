@@ -74,9 +74,10 @@ sub edit ($self) {
   my $category = $self->param('category');
   my $others = $self->param('ingredients');
   my $sql = 'SELECT name FROM category WHERE id = ?';
-  my $name = $self->dbh->selectall_arrayref($sql, undef, $category)->[0][0];
+  my $db = $self->sqlite->db;
+  my $name = $db->query($sql, $category)->hash->{name};
   $sql = 'SELECT id,name FROM ingredient WHERE category_id = ? ORDER BY name';
-  my $ingredients = $self->dbh->selectall_arrayref($sql, { Slice => {} }, $category);
+  my $ingredients = $db->query($sql, $category)->hashes;
   $self->render(
     category    => $category,
     name        => $name,
