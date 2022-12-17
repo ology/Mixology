@@ -90,22 +90,23 @@ sub update ($self) {
   my $category = $self->param('category');
   my $title = $self->param('title');
   my $new_ingredient = $self->param('new_ingredient');
+  my $db = $self->sqlite->db;
   if ($new_ingredient) {
     my $sql = 'INSERT INTO ingredient (name, category_id) VALUES (?, ?)';
-    my $rv = $self->dbh->do($sql, undef, $new_ingredient, $category);
+    $db->query($sql, $new_ingredient, $category);
   }
   my $sql = 'SELECT name FROM category WHERE id = ?';
-  my $name = $self->dbh->selectall_arrayref($sql, undef, $category)->[0][0];
+  my $name = $db->query($sql, $category)->hash->{name};
   if ($title && $title ne $name) {
     $sql = 'UPDATE category SET name = ? WHERE id = ?';
-    my $rv = $self->dbh->do($sql, undef, $title, $category);
+    $db->query($sql, $title, $category);
   }
   my @ingredients = grep { $_ =~ /^ingredient_/ } @{ $self->req->params->names };
   for my $ingredient (@ingredients) {
     my $name = $self->param($ingredient);
     (my $id = $ingredient) =~ s/^ingredient_(\d+)$/$1/;
     $sql = 'UPDATE ingredient SET name = ? WHERE id = ?';
-    my $rv = $self->dbh->do($sql, undef, $name, $id);
+    $db->query($sql, $name, $id);
   }
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
