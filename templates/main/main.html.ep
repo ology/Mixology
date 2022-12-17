@@ -8,14 +8,14 @@
 % my %ingredients = split /:/, $ingredients;
 % for my $cat (@$categories) {
 <div class="row" style=" margin-left: 15px; margin-right: 15px;">
-  <a href="<%= url_for('edit')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-info"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+  <a href="<%= url_for('edit')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-info"><i class="fa fa-pencil" aria-hidden="true"></i></a>
   &nbsp;
   <div style="width: 85px;">
-  <a href="<%= url_for('mix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-success btn-block"><%= ucfirst $cat->[1] %></a>
+  <a href="<%= url_for('mix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-success btn-block"><%= ucfirst $cat->[1] %></a>
   </div>
 %   if (exists $ingredients{ $cat->[0] }) {
   &nbsp;
-  <a href="<%= url_for('unmix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-danger"><i class="fa fa-minus" aria-hidden="true"></i></a>
+  <a href="<%= url_for('unmix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-danger"><i class="fa fa-minus" aria-hidden="true"></i></a>
   &nbsp;
   <%= ucfirst $ingredients{ $cat->[0] } %>
 %   }
