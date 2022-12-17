@@ -15,7 +15,7 @@
   </div>
 %   if (exists $ingredients{ $cat->[0] }) {
   &nbsp;
-  <a href="<%= url_for('unmix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-danger" title="Remove the ingredient"><i class="fa fa-minus" aria-hidden="true"></i></a>
+  <a href="<%= url_for('unmix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-secondary" title="Remove the ingredient"><i class="fa fa-minus" aria-hidden="true"></i></a>
   &nbsp;
   <%= ucfirst $ingredients{ $cat->[0] } %>
 %   }
