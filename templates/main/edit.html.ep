@@ -8,7 +8,7 @@
 <div class="row" style=" margin-left: 15px; margin-right: 15px;">
   <form method="post">
     <div class="form-group row">
-      <label for="title" class="col-sm-2 col-form-label"><b>Title:</b></label>
+      <label for="title" class="col-sm-2 col-form-label"><b>Category:</b></label>
       <div class="col-sm-6">
         <input type="text" class="form-control" name="title" placeholder="Category" value="<%= $name %>" title="Category name">
       </div>
