@@ -6,7 +6,6 @@ use List::SomeUtils qw(natatime);
 
 sub main ($self) {
   my $ingredients = $self->param('ingredients') || ''; # currently mixed ingredients
-warn __PACKAGE__,' L',__LINE__,' ',,"ING: $ingredients\n";
   my %ingredients = _transform($ingredients);
   my $db = $self->sqlite->db;
   # select all sorted categories as a LOL
