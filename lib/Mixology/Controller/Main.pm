@@ -99,7 +99,7 @@ sub update ($self) {
     $sql = 'UPDATE category SET name = ? WHERE id = ?';
     $db->query($sql, lc($title), $category);
   }
-  my @ingredients = grep { $_ =~ /^ingredient_/ } @{ $self->req->params->names };
+  my @ingredients = grep { $_ =~ /^ingredient_/ } $self->req->params->names->@*;
   for my $ingredient (@ingredients) {
     my $name = $self->param($ingredient);
     (my $id = $ingredient) =~ s/^ingredient_(\d+)$/$1/;
