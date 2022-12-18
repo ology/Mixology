@@ -69,17 +69,17 @@ sub shuffle ($self) {
 
 sub edit ($self) {
   my $category = $self->param('category');
-  my $others = $self->param('ingredients');
+  my $ingredients = $self->param('ingredients');
   my $sql = 'SELECT name FROM category WHERE id = ?';
   my $db = $self->sqlite->db;
   my $name = $db->query($sql, $category)->hash->{name};
   $sql = 'SELECT id,name FROM ingredient WHERE category_id = ? ORDER BY name';
-  my $ingredients = $db->query($sql, $category)->hashes;
+  my $children = $db->query($sql, $category)->hashes;
   $self->render(
     category    => $category,
     name        => $name,
-    ingredients => $others,
-    children    => $ingredients,
+    ingredients => $ingredients,
+    children    => $children,
   );
 }
 
