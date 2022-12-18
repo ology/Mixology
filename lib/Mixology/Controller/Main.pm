@@ -49,20 +49,20 @@ sub unmix ($self) {
 }
 
 sub shuffle ($self) {
-  my $others = $self->param('ingredients');
-  my %others = split /:/, $others;
+  my $ingredients = $self->param('ingredients');
+  my %ingredients = split /:/, $ingredients;
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
   my $db = $self->sqlite->db;
-  for my $category (keys %others) {
-    my @bind = ($category, $others{$category});
+  for my $category (keys %ingredients) {
+    my @bind = ($category, $ingredients{$category});
     my $named = $db->query($sql, @bind)->arrays;
     my $ingredient = $named->[ int rand @$named ][0];
-    $others{$category} = $ingredient;
+    $ingredients{$category} = $ingredient;
   }
-  my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
+  $ingredients = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
-      ingredients => $fresh,
+      ingredients => $ingredients,
     )
   );
 }
