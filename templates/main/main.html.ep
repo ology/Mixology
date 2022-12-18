@@ -11,7 +11,7 @@
   <a href="<%= url_for('edit')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-info" title="Edit this category"><i class="fa fa-pencil" aria-hidden="true"></i></a>
   &nbsp;
 %   }
-  <div>
+  <div style="width: 9em;">
   <a href="<%= url_for('mix')->query(category => $cat->[0], ingredients => $ingredients) %>" class="btn btn-sm btn-outline-success btn-block" title="Choose an ingredient from this category"><%= ucfirst $cat->[1] %></a>
   </div>
 % for my $i ($items->{ $cat->[0] }->@*) {
