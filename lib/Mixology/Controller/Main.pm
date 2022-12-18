@@ -62,28 +62,6 @@ sub unmix ($self) {
   );
 }
 
-sub shuffle ($self) {
-  my $ingredients = $self->param('ingredients'); # currently mixed ingredients
-  # transform the given ingredients into a id => name hash
-  my %ingredients = split /:/, $ingredients;
-  my $db = $self->sqlite->db;
-  # select an ingredient for each mixed category that isn't already chosen for that category
-  my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
-  for my $category (keys %ingredients) {
-    my @bind = ($category, $ingredients{$category});
-    my $named = $db->query($sql, @bind)->arrays;
-    # choose a random ingredient to mix for the given category
-    $ingredients{$category} = $named->[ int rand @$named ][0];
-  }
-  # remap all the mixed ingredients into colon-separated form
-  $ingredients = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
-  $self->redirect_to(
-    $self->url_for('main')->query(
-      ingredients => $ingredients,
-    )
-  );
-}
-
 sub edit ($self) {
   my $category = $self->param('category'); # chosen category (id)
   my $ingredients = $self->param('ingredients'); # currently mixed ingredients
