@@ -5,6 +5,7 @@ use Mojo::SQLite;
 
 sub main ($self) {
   my $ingredients = $self->param('ingredients') || '';
+  # select all sorted categories as a LOL
   my $sql = 'SELECT id,name FROM category ORDER BY name';
   my $db = $self->sqlite->db;
   my $categories = $db->query($sql)->arrays;
@@ -15,18 +16,23 @@ sub main ($self) {
 }
 
 sub mix ($self) {
-  my $category = $self->param('category');
-  my $ingredients = $self->param('ingredients');
+  my $category = $self->param('category'); # chosen category (id)
+  my $ingredients = $self->param('ingredients'); # currently mixed ingredients
+  # transform the given ingredients into a id => name hash
   my %ingredients = split /:/, $ingredients;
+  # select all ingredients for the given category...
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ?';
   my @bind = ($category);
+  # ...that is not one of the given ingredients
   if ($category && $ingredients{$category}) {
     $sql .= ' AND name != ?';
     push @bind, $ingredients{$category};
   }
   my $db = $self->sqlite->db;
   my $named = $db->query($sql, @bind)->arrays;
+  # choose a random ingredient to mix for the given category
   $ingredients{$category} = $named->[ int rand @$named ][0];
+  # remap all the mixed ingredients into colon-separated form
   $ingredients = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
@@ -36,29 +42,35 @@ sub mix ($self) {
 }
 
 sub unmix ($self) {
-  my $category = $self->param('category');
-  my $ingredients = $self->param('ingredients');
+  my $category = $self->param('category'); # chosen category (id)
+  my $ingredients = $self->param('ingredients'); # currently mixed ingredients
+  # transform the given ingredients into a id => name hash
   my %ingredients = split /:/, $ingredients;
+  # remove the mixed ingredient
   delete $ingredients{$category};
-  my $fresh = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
+  # remap all the mixed ingredients into colon-separated form
+  my $ingredient = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
-      ingredients => $fresh,
+      ingredients => $ingredient,
     )
   );
 }
 
 sub shuffle ($self) {
-  my $ingredients = $self->param('ingredients');
+  my $ingredients = $self->param('ingredients'); # currently mixed ingredients
+  # transform the given ingredients into a id => name hash
   my %ingredients = split /:/, $ingredients;
+  # select an ingredient for each mixed category that isn't already chosen for that category
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
   my $db = $self->sqlite->db;
   for my $category (keys %ingredients) {
     my @bind = ($category, $ingredients{$category});
     my $named = $db->query($sql, @bind)->arrays;
-    my $ingredient = $named->[ int rand @$named ][0];
-    $ingredients{$category} = $ingredient;
+    # choose a random ingredient to mix for the given category
+    $ingredients{$category} = $named->[ int rand @$named ][0];
   }
+  # remap all the mixed ingredients into colon-separated form
   $ingredients = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
@@ -68,24 +80,26 @@ sub shuffle ($self) {
 }
 
 sub edit ($self) {
-  my $category = $self->param('category');
-  my $ingredients = $self->param('ingredients');
+  my $category = $self->param('category'); # chosen category (id)
+  my $ingredients = $self->param('ingredients'); # currently mixed ingredients
+  # select the name for the given category id
   my $sql = 'SELECT name FROM category WHERE id = ?';
   my $db = $self->sqlite->db;
   my $name = $db->query($sql, $category)->hash->{name};
+  # select all sorted ingredients of the given category, as a hashref
   $sql = 'SELECT id,name FROM ingredient WHERE category_id = ? ORDER BY name';
   my $children = $db->query($sql, $category)->hashes;
   $self->render(
     category    => $category,
     name        => $name,
-    ingredients => $ingredients,
+    ingredients => $ingredients, # passthrough for back-button functionality
     children    => $children,
   );
 }
 
 sub update ($self) {
-  my $category = $self->param('category');
-  my $title = $self->param('title');
+  my $category = $self->param('category'); # chosen category (id)
+  my $title = $self->param('title'); # category name
   my $new_ingredient = $self->param('new_ingredient');
   my $db = $self->sqlite->db;
   if ($new_ingredient) {
@@ -111,8 +125,8 @@ sub update ($self) {
 }
 
 sub delete_ingredient ($self) {
-  my $category = $self->param('category');
-  my $ingredient = $self->param('ingredient');
+  my $category = $self->param('category'); # chosen category (id)
+  my $ingredient = $self->param('ingredient'); # chosen ingredient (id)
   my $sql = 'DELETE FROM ingredient WHERE id = ?';
   my $db = $self->sqlite->db;
   $db->query($sql, $ingredient);
@@ -122,7 +136,7 @@ sub delete_ingredient ($self) {
 }
 
 sub delete_category ($self) {
-  my $category = $self->param('category');
+  my $category = $self->param('category'); # chosen category (id)
   my $sql = 'DELETE FROM ingredient WHERE category_id = ?';
   my $db = $self->sqlite->db;
   $db->query($sql, $category);
@@ -132,7 +146,7 @@ sub delete_category ($self) {
 }
 
 sub new_category ($self) {
-  my $name = $self->param('name');
+  my $name = $self->param('name'); # category name
   if ($name) {
     my $sql = 'INSERT INTO category (name) VALUES (?)';
     my $db = $self->sqlite->db;
