@@ -26,8 +26,7 @@ sub mix ($self) {
   }
   my $db = $self->sqlite->db;
   my $ingredients = $db->query($sql, @bind)->arrays;
-  my $ingredient = $ingredients->[ int rand @$ingredients ][0];
-  $others{$category} = $ingredient;
+  $others{$category} = $ingredients->[ int rand @$ingredients ][0];
   my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
   $self->redirect_to(
     $self->url_for('main')->query(
