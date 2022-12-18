@@ -6,6 +6,7 @@ use List::SomeUtils qw(natatime);
 
 sub main ($self) {
   my $ingredients = $self->param('ingredients') || ''; # currently mixed ingredients
+warn __PACKAGE__,' L',__LINE__,' ',,"ING: $ingredients\n";
   my %ingredients = _transform($ingredients);
   my $db = $self->sqlite->db;
   # select all sorted categories as a LOL
@@ -53,10 +54,11 @@ sub unmix ($self) {
   # remove the mixed ingredient
   my @without = grep { $_->{id} != $ingredient } $ingredients{$category}->@*;
   $ingredients{$category} = \@without;
+  delete $ingredients{$category} unless $ingredients{$category}->@*;
   $ingredients = _remap(%ingredients);
   $self->redirect_to(
     $self->url_for('main')->query(
-      ingredients => $ingredient,
+      ingredients => $ingredients,
     )
   );
 }
