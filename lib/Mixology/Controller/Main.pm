@@ -7,7 +7,6 @@ use List::SomeUtils qw(natatime);
 sub main ($self) {
   my $ingredients = $self->param('ingredients') || ''; # currently mixed ingredients
   my %ingredients = _transform($ingredients);
-
   my $db = $self->sqlite->db;
   # select all sorted categories as a LOL
   my $sql = 'SELECT id,name FROM category ORDER BY name';
@@ -22,22 +21,23 @@ sub main ($self) {
 sub mix ($self) {
   my $category = $self->param('category'); # chosen category (id)
   my $ingredients = $self->param('ingredients'); # currently mixed ingredients
-  # transform the given ingredients into a id => name hash
-  my %ingredients = split /:/, $ingredients;
+  my %ingredients = _transform($ingredients);
   my $db = $self->sqlite->db;
   # select all ingredients for the given category...
-  my $sql = 'SELECT name FROM ingredient WHERE category_id = ?';
+  my $sql = 'SELECT id,name FROM ingredient WHERE category_id = ?';
   my @bind = ($category);
   # ...that is not one of the given ingredients
   if ($category && $ingredients{$category}) {
-    $sql .= ' AND name != ?';
-    push @bind, $ingredients{$category};
+    for my $item ($ingredients{$category}->@*) {
+      $sql .= ' AND name != ?';
+      push @bind, $item->{name};
+    }
   }
   my $named = $db->query($sql, @bind)->arrays;
-  # choose a random ingredient to mix for the given category
-  $ingredients{$category} = $named->[ int rand @$named ][0];
-  # remap all the mixed ingredients into colon-separated form
-  $ingredients = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
+  my $thing = $named->[ int rand @$named ];
+  # add a random ingredient to mix for the given category
+  push $ingredients{$category}->@*, { id => $thing->[0], name => $thing->[1] };
+  $ingredients = _remap(%ingredients);
   $self->redirect_to(
     $self->url_for('main')->query(
       ingredients => $ingredients,
@@ -182,6 +182,20 @@ sub _transform {
     }
   }
   return %data;
+}
+
+# remap all the mixed ingredients from the datastructure
+sub _remap {
+  my (%data) = @_;
+  my @things;
+  for my $cat (keys %data) {
+    my @items;
+    for my $item ($data{$cat}->@*) {
+      push @items, join(':', $item->{id}, $item->{name});
+    }
+    push @things, $cat . '|' . join(':', @items);
+  }
+  return join(',', @things);
 }
 
 1;
