@@ -16,18 +16,18 @@ sub main ($self) {
 
 sub mix ($self) {
   my $category = $self->param('category');
-  my $others = $self->param('ingredients');
-  my %others = split /:/, $others;
+  my $ingredients = $self->param('ingredients');
+  my %ingredients = split /:/, $ingredients;
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ?';
   my @bind = ($category);
-  if ($category && $others{$category}) {
+  if ($category && $ingredients{$category}) {
     $sql .= ' AND name != ?';
-    push @bind, $others{$category};
+    push @bind, $ingredients{$category};
   }
   my $db = $self->sqlite->db;
   my $named = $db->query($sql, @bind)->arrays;
-  $others{$category} = $named->[ int rand @$named ][0];
-  my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
+  $ingredients{$category} = $named->[ int rand @$named ][0];
+  my $fresh = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
       ingredients => $fresh,
