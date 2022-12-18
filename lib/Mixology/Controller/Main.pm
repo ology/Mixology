@@ -2,9 +2,12 @@ package Mixology::Controller::Main;
 use Mojo::Base 'Mojolicious::Controller', -signatures;
 
 use Mojo::SQLite;
+use List::SomeUtils qw(natatime);
 
 sub main ($self) {
-  my $ingredients = $self->param('ingredients') || '';
+  my $ingredients = $self->param('ingredients') || ''; # currently mixed ingredients
+  my %ingredients = _transform($ingredients);
+
   my $db = $self->sqlite->db;
   # select all sorted categories as a LOL
   my $sql = 'SELECT id,name FROM category ORDER BY name';
@@ -12,6 +15,7 @@ sub main ($self) {
   $self->render(
     categories  => $categories,
     ingredients => $ingredients,
+    items       => \%ingredients,
   );
 }
 
@@ -162,6 +166,22 @@ sub new_category ($self) {
     $db->query($sql, lc($name));
   }
   $self->redirect_to($self->url_for('main'));
+}
+
+# transform the given ingredients into a data structure
+sub _transform {
+  my ($string) = @_;
+  my @chunks = split /,/, $string;
+  my %cats = map { split /\|/, $_ } @chunks;
+  my %data;
+  for my $cat (keys %cats) {
+    my @items = split /:/, $cats{$cat};
+    my $it = natatime 2, @items;
+    while (my @vals = $it->()) {
+      push $data{$cat}->@*, { id => $vals[0], name => $vals[1] };
+    }
+  }
+  return %data;
 }
 
 1;
