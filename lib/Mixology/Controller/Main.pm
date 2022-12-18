@@ -5,9 +5,9 @@ use Mojo::SQLite;
 
 sub main ($self) {
   my $ingredients = $self->param('ingredients') || '';
+  my $db = $self->sqlite->db;
   # select all sorted categories as a LOL
   my $sql = 'SELECT id,name FROM category ORDER BY name';
-  my $db = $self->sqlite->db;
   my $categories = $db->query($sql)->arrays;
   $self->render(
     categories  => $categories,
@@ -20,6 +20,7 @@ sub mix ($self) {
   my $ingredients = $self->param('ingredients'); # currently mixed ingredients
   # transform the given ingredients into a id => name hash
   my %ingredients = split /:/, $ingredients;
+  my $db = $self->sqlite->db;
   # select all ingredients for the given category...
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ?';
   my @bind = ($category);
@@ -28,7 +29,6 @@ sub mix ($self) {
     $sql .= ' AND name != ?';
     push @bind, $ingredients{$category};
   }
-  my $db = $self->sqlite->db;
   my $named = $db->query($sql, @bind)->arrays;
   # choose a random ingredient to mix for the given category
   $ingredients{$category} = $named->[ int rand @$named ][0];
@@ -61,9 +61,9 @@ sub shuffle ($self) {
   my $ingredients = $self->param('ingredients'); # currently mixed ingredients
   # transform the given ingredients into a id => name hash
   my %ingredients = split /:/, $ingredients;
+  my $db = $self->sqlite->db;
   # select an ingredient for each mixed category that isn't already chosen for that category
   my $sql = 'SELECT name FROM ingredient WHERE category_id = ? AND name != ?';
-  my $db = $self->sqlite->db;
   for my $category (keys %ingredients) {
     my @bind = ($category, $ingredients{$category});
     my $named = $db->query($sql, @bind)->arrays;
@@ -82,9 +82,9 @@ sub shuffle ($self) {
 sub edit ($self) {
   my $category = $self->param('category'); # chosen category (id)
   my $ingredients = $self->param('ingredients'); # currently mixed ingredients
+  my $db = $self->sqlite->db;
   # select the name for the given category id
   my $sql = 'SELECT name FROM category WHERE id = ?';
-  my $db = $self->sqlite->db;
   my $name = $db->query($sql, $category)->hash->{name};
   # select all sorted ingredients of the given category, as a hashref
   $sql = 'SELECT id,name FROM ingredient WHERE category_id = ? ORDER BY name';
@@ -102,20 +102,25 @@ sub update ($self) {
   my $title = $self->param('title'); # category name
   my $new_ingredient = $self->param('new_ingredient');
   my $db = $self->sqlite->db;
+  # insert a new ingredient into the db
   if ($new_ingredient) {
     my $sql = 'INSERT INTO ingredient (name, category_id) VALUES (?, ?)';
     $db->query($sql, lc($new_ingredient), $category);
   }
+  # select the name for the given category id
   my $sql = 'SELECT name FROM category WHERE id = ?';
   my $name = $db->query($sql, $category)->hash->{name};
+  # update the category name if different
   if ($title && $title ne $name) {
     $sql = 'UPDATE category SET name = ? WHERE id = ?';
     $db->query($sql, lc($title), $category);
   }
+  # gather all the ingredients
   my @ingredients = grep { $_ =~ /^ingredient_/ } $self->req->params->names->@*;
   for my $ingredient (@ingredients) {
     my $name = $self->param($ingredient);
     (my $id = $ingredient) =~ s/^ingredient_(\d+)$/$1/;
+    # update the ingredient name
     $sql = 'UPDATE ingredient SET name = ? WHERE id = ?';
     $db->query($sql, lc($name), $id);
   }
@@ -127,8 +132,9 @@ sub update ($self) {
 sub delete_ingredient ($self) {
   my $category = $self->param('category'); # chosen category (id)
   my $ingredient = $self->param('ingredient'); # chosen ingredient (id)
-  my $sql = 'DELETE FROM ingredient WHERE id = ?';
   my $db = $self->sqlite->db;
+  # delete the ingredient
+  my $sql = 'DELETE FROM ingredient WHERE id = ?';
   $db->query($sql, $ingredient);
   $self->redirect_to($self->url_for('edit')->query(
     category => $category,
@@ -137,9 +143,11 @@ sub delete_ingredient ($self) {
 
 sub delete_category ($self) {
   my $category = $self->param('category'); # chosen category (id)
-  my $sql = 'DELETE FROM ingredient WHERE category_id = ?';
   my $db = $self->sqlite->db;
+  # delete each ingredient of the category
+  my $sql = 'DELETE FROM ingredient WHERE category_id = ?';
   $db->query($sql, $category);
+  # delete the category
   $sql = 'DELETE FROM category WHERE id = ?';
   $db->query($sql, $category);
   $self->redirect_to($self->url_for('main'));
@@ -148,8 +156,9 @@ sub delete_category ($self) {
 sub new_category ($self) {
   my $name = $self->param('name'); # category name
   if ($name) {
-    my $sql = 'INSERT INTO category (name) VALUES (?)';
     my $db = $self->sqlite->db;
+    # insert the new category
+    my $sql = 'INSERT INTO category (name) VALUES (?)';
     $db->query($sql, lc($name));
   }
   $self->redirect_to($self->url_for('main'));
