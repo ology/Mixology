@@ -27,10 +27,10 @@ sub mix ($self) {
   my $db = $self->sqlite->db;
   my $named = $db->query($sql, @bind)->arrays;
   $ingredients{$category} = $named->[ int rand @$named ][0];
-  my $fresh = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
+  $ingredients = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
-      ingredients => $fresh,
+      ingredients => $ingredients,
     )
   );
 }
