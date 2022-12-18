@@ -55,8 +55,8 @@ sub shuffle ($self) {
   my $db = $self->sqlite->db;
   for my $category (keys %others) {
     my @bind = ($category, $others{$category});
-    my $ingredients = $db->query($sql, @bind)->arrays;
-    my $ingredient = $ingredients->[ int rand @$ingredients ][0];
+    my $named = $db->query($sql, @bind)->arrays;
+    my $ingredient = $named->[ int rand @$named ][0];
     $others{$category} = $ingredient;
   }
   my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
