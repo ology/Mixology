@@ -47,13 +47,13 @@ sub mix ($self) {
 
 sub unmix ($self) {
   my $category = $self->param('category'); # chosen category (id)
+  my $ingredient = $self->param('ingredient'); # ingredient to remove
   my $ingredients = $self->param('ingredients'); # currently mixed ingredients
-  # transform the given ingredients into a id => name hash
-  my %ingredients = split /:/, $ingredients;
+  my %ingredients = _transform($ingredients);
   # remove the mixed ingredient
-  delete $ingredients{$category};
-  # remap all the mixed ingredients into colon-separated form
-  my $ingredient = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
+  my @without = grep { $_->{id} != $ingredient } $ingredients{$category}->@*;
+  $ingredients{$category} = \@without;
+  $ingredients = _remap(%ingredients);
   $self->redirect_to(
     $self->url_for('main')->query(
       ingredients => $ingredient,
@@ -172,7 +172,11 @@ sub new_category ($self) {
 sub _transform {
   my ($string) = @_;
   my @chunks = split /,/, $string;
-  my %cats = map { split /\|/, $_ } @chunks;
+  my %cats;
+  for my $chunk (@chunks) {
+    my @parts = split /\|/, $chunk;
+    $cats{ $parts[0] } = $parts[1];
+  }
   my %data;
   for my $cat (keys %cats) {
     my @items = split /:/, $cats{$cat};
