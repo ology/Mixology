@@ -37,10 +37,10 @@ sub mix ($self) {
 
 sub unmix ($self) {
   my $category = $self->param('category');
-  my $others = $self->param('ingredients');
-  my %others = split /:/, $others;
-  delete $others{$category};
-  my $fresh = join ':', map { $_ . ':' . $others{$_} } keys %others;
+  my $ingredients = $self->param('ingredients');
+  my %ingredients = split /:/, $ingredients;
+  delete $ingredients{$category};
+  my $fresh = join ':', map { $_ . ':' . $ingredients{$_} } keys %ingredients;
   $self->redirect_to(
     $self->url_for('main')->query(
       ingredients => $fresh,
